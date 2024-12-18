@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: account_service-account-service-1
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/accounts/**
+        - id: auth-service
+          uri: http://auth-service:8082
+          predicates:
+            - Path=/api/v1/auth/**
+server:
+  port: 8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

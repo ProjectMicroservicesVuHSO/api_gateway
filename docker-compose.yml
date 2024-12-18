@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    image: api-gateway
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=api-gateway
+      - SPRING_CLOUD_GATEWAY_ROUTES_0_ID=account_service-account-service-1
+      - SPRING_CLOUD_GATEWAY_ROUTES_0_URI=http://account-service:8081
+      - SPRING_CLOUD_GATEWAY_ROUTES_0_PREDICATES_0=Path=/api/v1/accounts/**
+      - SPRING_CLOUD_GATEWAY_ROUTES_1_ID=auth-service
+      - SPRING_CLOUD_GATEWAY_ROUTES_1_URI=http://auth-service:8082
+      - SPRING_CLOUD_GATEWAY_ROUTES_1_PREDICATES_0=Path=/api/v1/auth/**
+    ports:
+      - "8888:8888"
+    networks:
+      - vuhso-microservices
+networks:
+  vuhso-microservices:
+    external: true
